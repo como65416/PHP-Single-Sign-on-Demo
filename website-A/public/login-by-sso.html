@@ -1,0 +1,28 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login by SSO...</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/store-js@2.0.4/dist/store.legacy.min.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+<body>
+  <script>
+    async function loginByCode() {
+      let url = new URL(location.href);
+      let login_code = url.searchParams.get('login_code');
+      try {
+        let response = await axios.post('/api/login-by-sso-code', {
+          'code': login_code
+        });
+        store.set('jwt_token', response.data.token);
+        window.location.href = "/";
+      } catch (e) {
+        alert('verify code failed!');
+        window.location.href = "http://localhost:9011/";
+      }
+    }
+    loginByCode();
+  </script>
+</body>
+</html>

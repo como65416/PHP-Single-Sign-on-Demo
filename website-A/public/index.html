@@ -1,0 +1,26 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SSO login</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/store-js@2.0.4/dist/store.legacy.min.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+<body>
+  <div id="site_content" style="display:none;">
+    <h1>Welcome to Website-A</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <script>
+    async function refreshUI() {
+      if (!isLogin()) {
+        alert('You are not login, redirect to sso portal.');
+        window.location.href = "http://localhost:9011/";
+      } else {
+        document.getElementById('site_content').style.display = '';
+      }
+    }
+    refreshUI();
+  </script>
+</body>
+</html>
