@@ -42,7 +42,10 @@ $app->post('/api/login-by-sso-code', function (Request $request, Response $respo
     $key = getenv('KEY');
     $response->getBody()->write(json_encode([
         'result' => 'SUCCESS',
-        'token' => JWT::encode(['username' => $username, 'exp' => time() + 1800], $key)
+        'token' => JWT::encode([
+            'username' => json_decode($guzzle_response->getBody())->username,
+            'exp' => time() + 1800
+        ], $key)
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
