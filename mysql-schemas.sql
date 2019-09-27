@@ -1,5 +1,7 @@
 CREATE DATABASE `single_signon`;
 
+USE `single_signon`;
+
 CREATE TABLE `account` (
   `username` VARCHAR(40) NOT NULL,
   `password` VARCHAR(200) NULL,
