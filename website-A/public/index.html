@@ -8,18 +8,21 @@
 </head>
 <body>
   <div id="site_content" style="display:none;">
-    <h1>Welcome to Website-A</h1>
+    <h1>Hi <span id="login_account"></span>, welcome to Website-A</h1>
     <button onclick="logout()">Logout</button>
   </div>
   <script>
     async function refreshUI() {
-      if (!isLogin()) {
+      let loginStatus = getLoginStatus();
+      if (loginStatus == null) {
         alert('You are not login, redirect to sso portal.');
         window.location.href = "http://localhost:9011/";
       } else {
+        document.getElementById('login_account').innerHTML = loginStatus.username;
         document.getElementById('site_content').style.display = '';
       }
     }
+
     refreshUI();
   </script>
 </body>
