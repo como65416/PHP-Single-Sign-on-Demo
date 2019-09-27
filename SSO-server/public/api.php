@@ -94,7 +94,7 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
 
     $code = bin2hex($iv) . "." . $encrypted;
     $response->getBody()->write(json_encode([
-        'login_url' => $site->receive_code_url . "?login_code=" . $code
+        'login_url' => $site->receive_code_url . "?login_code=" . urlencode($code)
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
@@ -127,7 +127,7 @@ $app->post('/api/verify-code', function (Request $request, Response $response, $
 
     $response->getBody()->write(json_encode([
         'result' => 'Login Success',
-        'usernmae' => $decrypted_data->username
+        'username' => $decrypted_data->username
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
