@@ -5,7 +5,7 @@ services:
     volumes:
       - ./SSO-server:/usr/share/nginx/html/SSO-server
       - ./website-A:/usr/share/nginx/html/website-A
-    command: bash -c "cd /usr/share/nginx/html/SSO-server && composer install"
+    command: bash -c "cd /usr/share/nginx/html/SSO-server && composer install && cd /usr/share/nginx/html/website-A && composer install"
   phpfpm:
     build: ./phpfpm-Dockerfile
     depends_on:
