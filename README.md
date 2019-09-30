@@ -84,4 +84,5 @@ docker-compose up
 </details>
 
 ※ WebsiteB 是個範例(未實作)，可能會有多個子服務站
+
 ※ 避免有 WebsiteA 是身分A，而 WebsiteB 是身分B的情況發生，在登出時需由SSO站對所有子服務站進行要求登入
