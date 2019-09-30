@@ -16,17 +16,17 @@ $app->addRoutingMiddleware();
 $app->add(new JsonBodyParserMiddleware);
 
 // 發送轉址URL
-$app->post('/api/login-by-sso-code', function (Request $request, Response $response, $args) {
+$app->post('/api/login-by-sso-ticket', function (Request $request, Response $response, $args) {
     $parsed_body = $request->getParsedBody();
 
-    $code = (isset($parsed_body['code'])) ? $parsed_body['code'] : '';
+    $ticket = (isset($parsed_body['ticket'])) ? $parsed_body['ticket'] : '';
 
     $guzzle_http = new GuzzleHttp;
-    $guzzle_response = $guzzle_http->request('POST', 'http://web:9011/api/verify-code', [
+    $guzzle_response = $guzzle_http->request('POST', 'http://web:9011/api/verify-ticket', [
         'http_errors' => false,
         'form_params' => [
-            'code' => $code,
-            'ticket' => 'RfmUtfRoeu',
+            'ticket' => $ticket,
+            'code' => 'RfmUtfRoeu',
         ]
     ]);
 

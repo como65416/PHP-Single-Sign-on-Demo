@@ -101,14 +101,14 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
 
     $code = bin2hex($iv) . "." . $encrypted;
     $response->getBody()->write(json_encode([
-        'login_url' => "http://" . $site->host . $site->receive_code_path . "?login_code=" . urlencode($code) . '&redirect_path=' . urlencode($url_info['path'])
+        'login_url' => "http://" . $site->host . $site->receive_code_path . "?login_ticket=" . urlencode($code) . '&redirect_path=' . urlencode($url_info['path'])
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
 });
 
-// 驗證code是否正確
-$app->post('/api/verify-code', function (Request $request, Response $response, $args) {
+// 給子站驗證ticket是否正確的API
+$app->post('/api/verify-ticket', function (Request $request, Response $response, $args) {
     $parsed_body = $request->getParsedBody();
 
     $code = $parsed_body['code'];
@@ -123,7 +123,7 @@ $app->post('/api/verify-code', function (Request $request, Response $response, $
 
     if (
         empty($decrypted_data) ||
-        !Capsule::table('site')->where('id', '=', $site_id)->where('verify_code_ticket', '=', $ticket)->exists()
+        !Capsule::table('site')->where('id', '=', $site_id)->where('verify_ticket_code', '=', $ticket)->exists()
     ) {
         $response->getBody()->write(json_encode([
             'result' => 'Verify fail',

@@ -8,13 +8,13 @@
 </head>
 <body>
   <script>
-    async function loginByCode() {
+    async function loginByTicket() {
       let url = new URL(location.href);
-      let login_code = url.searchParams.get('login_code');
+      let login_ticket = url.searchParams.get('login_ticket');
       let redirect_path = url.searchParams.get('redirect_path');
       try {
-        let response = await axios.post('/api/login-by-sso-code', {
-          'code': login_code
+        let response = await axios.post('/api/login-by-sso-ticket', {
+          'ticket': login_ticket
         });
         store.set('jwt_token', response.data.token);
         window.location.href = (redirect_path != null) ? redirect_path : "/";
@@ -23,7 +23,7 @@
         window.location.href = "http://localhost:9011/";
       }
     }
-    loginByCode();
+    loginByTicket();
   </script>
 </body>
 </html>
