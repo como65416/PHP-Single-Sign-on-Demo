@@ -1,3 +1,18 @@
+// 取得可以登入的網站
+async function getAvailableSites() {
+  if (store.get('jwt_token') == null) {
+    return [];
+  }
+
+  let response = await axios.get('/api/available-sites', {
+      headers: {
+        'Authorization': 'Bearer ' + store.get('jwt_token')
+      }
+    });
+
+  return response.data;
+}
+
 // 取得JWT內容
 function parseJwt (token) {
   var base64Url = token.split('.')[1];
@@ -9,7 +24,8 @@ function parseJwt (token) {
   return JSON.parse(jsonPayload);
 };
 
-function getLoginStatus() {
+// 取得登入狀態，如果沒有登入會回傳null
+async function getLoginStatus() {
   let jwt = store.get('jwt_token');
   if (jwt == null) {
     return null;
@@ -23,26 +39,15 @@ function getLoginStatus() {
   return parseJwt(jwt);
 }
 
-// 登入
-function login() {
-  let username = document.getElementById('username').value;
-  let password = document.getElementById('password').value;
+async function openSite(websiteUrl) {
+  let response = await axios.get("/api/to-site", {
+      params: {
+        website_url: websiteUrl
+      },
+      headers: {
+        'Authorization': 'Bearer ' + store.get('jwt_token')
+      }
+    });
 
-  axios.post('/api/login', {
-    username: username,
-    password: password
-  })
-  .then(function (response) {
-    store.set('jwt_token', response.data.token);
-    refreshUI();
-  })
-  .catch(function (error) {
-    alert('Login Fail');
-  });
-}
-
-// 登出
-function logout() {
-  store.remove('jwt_token');
-  refreshUI();
+  location.href = response.data.login_url;
 }
