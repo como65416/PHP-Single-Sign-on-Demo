@@ -55,7 +55,7 @@ $app->get('/api/available-sites', function (Request $request, Response $response
     $account_site_permissions = Capsule::table('account_site_permission')->where('username', '=', $username)->get();
     $site_ids = array_column($account_site_permissions->toArray(), 'site_id');
     $sites = Capsule::table('site')
-      ->select('id', 'name')
+      ->select('name', 'host', 'home_page_path', 'logout_path')
       ->whereIn('id', $site_ids)
       ->get();
 
@@ -67,7 +67,12 @@ $app->get('/api/available-sites', function (Request $request, Response $response
 // 發送轉址URL
 $app->get('/api/to-site', function (Request $request, Response $response, $args) {
     $query_params = $request->getQueryParams();
-    $site_id = $query_params['siteId'];
+    $website_url = $query_params['website_url'];
+
+    $url_info = parse_url($website_url);
+    $host = $url_info['host'] . (isset($url_info['port']) ? ':' . $url_info['port'] : '');
+
+    $site = Capsule::table('site')->where('host', '=', $host)->first();
 
     $key = getenv('KEY');
     $header_authorization = $request->getHeaderLine('Authorization');
@@ -75,7 +80,10 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
     $token_content = JWT::decode($match[1], $key, array('HS256'));
     $username = $token_content->username;
 
-    if (!Capsule::table('account_site_permission')->where('site_id', '=', $site_id)->where('username', '=', $username)->exists()) {
+    if (
+      $site == null ||
+      !Capsule::table('account_site_permission')->where('site_id', '=', $site->id)->where('username', '=', $username)->exists()
+    ) {
       $response->getBody()->write(json_encode([
           'result' => 'Permission denied',
       ]));
@@ -83,18 +91,17 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
           ->withStatus(403);
     }
 
-    $site = Capsule::table('site')->where('id', '=', $site_id)->first();
     $cipher = 'AES-256-CBC';
     $ivlen = openssl_cipher_iv_length($cipher);
     $iv = openssl_random_pseudo_bytes($ivlen);
     $encrypted = openssl_encrypt(json_encode([
       'username' => $username,
-      'site_id' => $site_id
+      'site_id' => $site->id
     ]), $cipher, $key, $options = 0, $iv);
 
     $code = bin2hex($iv) . "." . $encrypted;
     $response->getBody()->write(json_encode([
-        'login_url' => $site->receive_code_url . "?login_code=" . urlencode($code)
+        'login_url' => "http://" . $site->host . $site->receive_code_path . "?login_code=" . urlencode($code) . '&redirect_path=' . urlencode($url_info['path'])
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
@@ -119,14 +126,14 @@ $app->post('/api/verify-code', function (Request $request, Response $response, $
         !Capsule::table('site')->where('id', '=', $site_id)->where('verify_code_ticket', '=', $ticket)->exists()
     ) {
         $response->getBody()->write(json_encode([
-            'result' => 'Login fail',
+            'result' => 'Verify fail',
         ]));
         return $response->withHeader('Content-Type', 'application/json')
             ->withStatus(401);
     }
 
     $response->getBody()->write(json_encode([
-        'result' => 'Login Success',
+        'result' => 'Verify Success',
         'username' => $decrypted_data->username
     ]));
     return $response->withHeader('Content-Type', 'application/json')
