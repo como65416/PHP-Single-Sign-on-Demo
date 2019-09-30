@@ -1,0 +1,34 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SSO logout</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/store-js@2.0.4/dist/store.legacy.min.js"></script>
+  <script src="/js/main.js"></script>
+</head>
+<body>
+  <div>
+    <h1>SSO Lougut...</h1>
+  </div>
+
+  <script>
+    // 登出
+    async function logoutAll() {
+      let availableSites = await getAvailableSites();
+      for (let availableSite of availableSites) {
+        var ifrm = document.createElement("iframe");
+        ifrm.setAttribute("src", "http://" + availableSite.host + availableSite.logout_path);
+        ifrm.style.display = "none";
+        document.body.appendChild(ifrm);
+      }
+      // 因為開啟 iframe 需要時間，延遲2秒才跳轉回登入頁
+      setTimeout(function() {
+        store.remove('jwt_token');
+        location.href = '/login.html';
+      }, 2000);
+    }
+
+    logoutAll();
+  </script>
+</body>
+</html>
