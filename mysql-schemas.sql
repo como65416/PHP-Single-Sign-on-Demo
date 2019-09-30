@@ -14,13 +14,15 @@ INSERT INTO `account` (`username`, `password`) VALUES ('bob', '$2y$10$oZPGzEa.ZU
 CREATE TABLE `site` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
-  `domain` varchar(40) NOT NULL,
+  `host` varchar(40) NOT NULL,
   `verify_code_ticket` varchar(100) NOT NULL,
-  `receive_code_url` varchar(120) NOT NULL,
+  `home_page_path` varchar(120) NOT NULL,
+  `receive_code_path` varchar(120) NOT NULL,
+  `logout_path` varchar(120) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `site` (`id`, `name`, `domain`, `verify_code_ticket`, `receive_code_url`) VALUES (1, 'Website A', 'localhost:9012', 'RfmUtfRoeu', 'http://localhost:9012/login-by-sso.html');
+INSERT INTO `site` (`id`, `name`, `host`, `verify_code_ticket`, `home_page_path`, `receive_code_path`, `logout_path`) VALUES (1, 'Website A', 'localhost:9012', 'RfmUtfRoeu', '/', '/login-by-sso.html', '/logout.html');
 
 CREATE TABLE `account_site_permission` (
   `id` INT NOT NULL AUTO_INCREMENT,
