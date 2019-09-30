@@ -15,14 +15,14 @@ CREATE TABLE `site` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `host` varchar(40) NOT NULL,
-  `verify_code_ticket` varchar(100) NOT NULL,
+  `verify_ticket_code` varchar(100) NOT NULL,
   `home_page_path` varchar(120) NOT NULL,
   `receive_code_path` varchar(120) NOT NULL,
   `logout_path` varchar(120) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `site` (`id`, `name`, `host`, `verify_code_ticket`, `home_page_path`, `receive_code_path`, `logout_path`) VALUES (1, 'Website A', 'localhost:9012', 'RfmUtfRoeu', '/', '/login-by-sso.html', '/logout.html');
+INSERT INTO `site` (`id`, `name`, `host`, `verify_ticket_code`, `home_page_path`, `receive_code_path`, `logout_path`) VALUES (1, 'Website A', 'localhost:9012', 'RfmUtfRoeu', '/', '/login-by-sso.html', '/logout.html');
 
 CREATE TABLE `account_site_permission` (
   `id` INT NOT NULL AUTO_INCREMENT,
