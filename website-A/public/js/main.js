@@ -24,8 +24,8 @@ function getLoginStatus() {
   return parseJwt(jwt);
 }
 
-// 登出
-function logout() {
-  store.remove('jwt_token');
-  refreshUI();
+// 轉至 SSO 登入頁面
+async function toLoginPage() {
+  let ssoLoginUrl = 'http://localhost:9011/login.html?';
+  window.location.href = ssoLoginUrl + "redirect_url=" + encodeURIComponent(window.location.href);
 }
