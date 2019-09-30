@@ -7,61 +7,29 @@
   <script src="/js/main.js"></script>
 </head>
 <body>
-  <div id="login_form">
-    <h1>SSO Login</h1>
-    Account: <input id="username" type="text"></input></br />
-    Password: <input id="password" type="password"></input><br />
-    <button onclick="login()">Login</button>
-  </div>
-
-  <div id="site_list">
+  <div>
     <h1>SSO Site List</h1>
     <p>
-      Hello, <span id="login_account"></span> !! <button onclick="logout()">Logout</button>
+      Hello, <span id="login_account"></span> !! <button onclick="location.href = '/logout.html'">Logout</button>
     </p>
     <div id="site_links"></div>
   </div>
   <script>
-    // 取得可以登入的網站
-    async function getAvailableSites() {
-      let response = await axios.get('/api/available-sites', {
-          headers: {
-            'Authorization': 'Bearer ' + store.get('jwt_token')
-          }
-        });
-
-      return response.data;
-    }
-
-    async function openSite(siteId) {
-      let response = await axios.get("/api/to-site", {
-          params: {
-            siteId: siteId
-          },
-          headers: {
-            'Authorization': 'Bearer ' + store.get('jwt_token')
-          }
-        });
-
-      location.href = response.data.login_url;
-    }
-
     async function refreshUI() {
-      let loginStatus = getLoginStatus();
+      let loginStatus = await getLoginStatus();
+
       if (loginStatus != null) {
-        document.getElementById('login_form').style.display = "none";
-        document.getElementById('site_list').style.display = "";
         document.getElementById('login_account').innerHTML = loginStatus.username;
 
         let availableSites = await getAvailableSites();
         let html = '';
         for (let site of availableSites) {
-          html += '<a href="#" onclick="openSite(' + site.id + ')" />' + site.name + '</a><br />';
+          let url = 'http://' + site.host + site.home_page_path;
+          html += '<a href="#" onclick="openSite(\'' + url + '\')" />' + site.name + '</a><br />';
         }
         document.getElementById('site_links').innerHTML = html;
       } else {
-        document.getElementById('login_form').style.display = "";
-        document.getElementById('site_list').style.display = "none";
+        location.href = '/login.html';
       }
     }
 
