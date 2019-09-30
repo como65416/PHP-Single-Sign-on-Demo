@@ -1,0 +1,28 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Website-A (pageB)</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/store-js@2.0.4/dist/store.legacy.min.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+<body>
+  <div id="site_content" style="display:none;">
+    <h1>Hi <span id="login_account"></span>, welcome to Website-A (pageB)</h1>
+    <button onclick="location.href = 'http://localhost:9011/logout.html'">Logout</button>
+  </div>
+  <script>
+    async function refreshUI() {
+      let loginStatus = getLoginStatus();
+      if (loginStatus == null) {
+        toLoginPage();
+      } else {
+        document.getElementById('login_account').innerHTML = loginStatus.username;
+        document.getElementById('site_content').style.display = '';
+      }
+    }
+
+    refreshUI();
+  </script>
+</body>
+</html>
