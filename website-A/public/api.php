@@ -30,7 +30,8 @@ $app->post('/api/login-by-sso-ticket', function (Request $request, Response $res
         ]
     ]);
 
-    if ($guzzle_response->getStatusCode() != 200) {
+    $response_content = json_decode((string) $guzzle_response->getBody());
+    if ($guzzle_response->getStatusCode() != 200 || $response_content == null) {
         $response->getBody()->write(json_encode([
             'result' => 'Login fail',
         ]));

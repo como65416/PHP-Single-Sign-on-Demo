@@ -99,9 +99,9 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
       'site_id' => $site->id
     ]), $cipher, $key, $options = 0, $iv);
 
-    $code = bin2hex($iv) . "." . $encrypted;
+    $ticket = bin2hex($iv) . "." . $encrypted;
     $response->getBody()->write(json_encode([
-        'login_url' => "http://" . $site->host . $site->receive_code_path . "?login_ticket=" . urlencode($code) . '&redirect_path=' . urlencode($url_info['path'])
+        'login_url' => "http://" . $site->host . $site->receive_code_path . "?login_ticket=" . urlencode($ticket) . '&redirect_path=' . urlencode($url_info['path'])
     ]));
     return $response->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
@@ -115,7 +115,7 @@ $app->post('/api/verify-ticket', function (Request $request, Response $response,
     $ticket = $parsed_body['ticket'];
 
     $key = getenv('KEY');
-    $split_texts = explode('.', $code);
+    $split_texts = explode('.', $ticket);
     $cipher = 'AES-256-CBC';
     $iv = hex2bin($split_texts[0]);
     $decrypted_data = json_decode(openssl_decrypt($split_texts[1], $cipher, $key, $options = 0, $iv));
@@ -123,7 +123,7 @@ $app->post('/api/verify-ticket', function (Request $request, Response $response,
 
     if (
         empty($decrypted_data) ||
-        !Capsule::table('site')->where('id', '=', $site_id)->where('verify_ticket_code', '=', $ticket)->exists()
+        !Capsule::table('site')->where('id', '=', $site_id)->where('verify_ticket_code', '=', $code)->exists()
     ) {
         $response->getBody()->write(json_encode([
             'result' => 'Verify fail',
