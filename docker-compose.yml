@@ -5,7 +5,7 @@ services:
     volumes:
       - ./SSO-server:/usr/share/nginx/html/SSO-server
       - ./website-A:/usr/share/nginx/html/website-A
-    command: bash -c "cd /usr/share/nginx/html/SSO-server && composer install && cd /usr/share/nginx/html/website-A && composer install"
+    command: sh -c "cd /usr/share/nginx/html/SSO-server && composer install && cd /usr/share/nginx/html/website-A && composer install"
   phpfpm:
     build: ./phpfpm-Dockerfile
     depends_on:
@@ -14,7 +14,7 @@ services:
       - ./SSO-server:/usr/share/nginx/html/SSO-server
       - ./website-A:/usr/share/nginx/html/website-A
   web:
-    image: nginx:latest
+    image: nginx:1.17.4-alpine
     ports:
       - "9011:9011"
       - "9012:9012"
