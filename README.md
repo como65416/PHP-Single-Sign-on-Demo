@@ -16,6 +16,7 @@ docker-compose up
 | --- | --- |
 | http://localhost:9011 | SSO 站 |
 | http://localhost:9012 | 子服務站 WebsiteA |
+| http://localhost:9013 | 子服務站 WebsiteB |
 
 Demo 帳號
 
