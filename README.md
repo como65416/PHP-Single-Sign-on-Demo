@@ -17,6 +17,13 @@ docker-compose up
 | http://localhost:9011 | SSO 站 |
 | http://localhost:9012 | 子服務站 WebsiteA |
 
+Demo 帳號
+
+| username | password |
+| --- | --- |
+| bob | 1234 |
+| alice | 1234 |
+
 ## 運作流程
 
 ### 從 SSO站 登入並到 WebsiteA：
