@@ -23,6 +23,7 @@ CREATE TABLE `site` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `site` (`id`, `name`, `host`, `verify_ticket_code`, `home_page_path`, `receive_code_path`, `logout_path`) VALUES (1, 'Website A', 'localhost:9012', 'RfmUtfRoeu', '/', '/login-by-sso.html', '/logout.html');
+INSERT INTO `site` (`id`, `name`, `host`, `verify_ticket_code`, `home_page_path`, `receive_code_path`, `logout_path`) VALUES (2, 'Website B', 'localhost:9013', '$432F451yg', '/', '/login-by-sso.html', '/logout.html');
 
 CREATE TABLE `account_site_permission` (
   `id` INT NOT NULL AUTO_INCREMENT,

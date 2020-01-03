@@ -1,0 +1,29 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Website-B Login by SSO...</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/store-js@2.0.4/dist/store.legacy.min.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+<body>
+  <script>
+    async function loginByTicket() {
+      let url = new URL(location.href);
+      let login_ticket = url.searchParams.get('login_ticket');
+      let redirect_path = url.searchParams.get('redirect_path');
+      try {
+        let response = await axios.post('/api/login-by-sso-ticket', {
+          'ticket': login_ticket
+        });
+        store.set('jwt_token', response.data.token);
+        window.location.href = (redirect_path != null) ? redirect_path : "/";
+      } catch (e) {
+        alert('verify code failed!');
+        window.location.href = "http://localhost:9011/";
+      }
+    }
+    loginByTicket();
+  </script>
+</body>
+</html>

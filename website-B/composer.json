@@ -1,0 +1,21 @@
+{
+    "name": "comoco-sso-demo/website-B",
+    "authors": [
+        {
+            "name": "comoco",
+            "email": "como65416@gmail.com"
+        }
+    ],
+    "autoload-dev": {
+        "psr-4": {
+            "ComocoSsoDemo\\WebsiteA\\": "src/"
+        }
+    },
+    "require": {
+        "slim/slim": "^4.2",
+        "slim/psr7": "^0.5.0",
+        "vlucas/phpdotenv": "^3.6",
+        "firebase/php-jwt": "^5.0",
+        "guzzlehttp/guzzle": "^6.3"
+    }
+}
