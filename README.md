@@ -26,6 +26,8 @@ Demo 帳號
 
 ## 運作流程
 
+※ 以下流程中虛線表示在 backend 運作
+
 ### 從 SSO站 登入並到 WebsiteA：
 
 ![](./README_attachments/login-sequenceDiagram-1.png)
@@ -39,8 +41,8 @@ Demo 帳號
     participant WebsiteA
     SSO站->>SSO站: 1. 在SSO站登入，SSO站紀錄本身的登入狀態
     SSO站->>WebsiteA: 2. 點擊 Website 連結時，連結附上驗證用的 ticket 轉向 WebsiteA
-    WebsiteA->>SSO站: 3. WebsiteA 透過後端API詢問 SSO站 ticket 是否有效
-    SSO站->>WebsiteA: 4. SSO站回覆 ticket 是否正確，如果正確附上使用者資訊
+    WebsiteA-->>SSO站: 3. WebsiteA 透過後端API詢問 SSO站 ticket 是否有效
+    SSO站-->>WebsiteA: 4. SSO站回覆 ticket 是否正確，如果正確附上使用者資訊
     WebsiteA->>WebsiteA: 5. 如果 ticket 是有效的，WebsiteA記住本身的登入狀態
   ```
 </details>
@@ -61,8 +63,8 @@ Demo 帳號
     WebsiteA->>WebsiteA: 1. 檢查自身是否已經是登入狀態
     WebsiteA->>SSO站: 2. 如果是未登入狀態，向SSO站請求登入資訊
     SSO站->>WebsiteA: 3. SSO站附上驗證用的 ticket 轉向 WebsiteA
-    WebsiteA->>SSO站: 4. WebsiteA 透過後端API詢問 SSO站 ticket 是否有效
-    SSO站->>WebsiteA: 5. SSO站回覆 ticket 是否正確，如果正確附上使用者資訊
+    WebsiteA-->>SSO站: 4. WebsiteA 透過後端API詢問 SSO站 ticket 是否有效
+    SSO站-->>WebsiteA: 5. SSO站回覆 ticket 是否正確，如果正確附上使用者資訊
     WebsiteA->>WebsiteA: 6. 如果 ticket 是有效的，WebsiteA記住本身的登入狀態
   ```
 </details>
