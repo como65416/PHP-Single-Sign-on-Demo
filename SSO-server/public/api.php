@@ -96,7 +96,8 @@ $app->get('/api/to-site', function (Request $request, Response $response, $args)
     $iv = openssl_random_pseudo_bytes($ivlen);
     $encrypted = openssl_encrypt(json_encode([
       'username' => $username,
-      'site_id' => $site->id
+      'site_id' => $site->id,
+      'expired_at' => time() + 3,
     ]), $cipher, $key, $options = 0, $iv);
 
     $ticket = bin2hex($iv) . "." . $encrypted;
@@ -123,6 +124,7 @@ $app->post('/api/verify-ticket', function (Request $request, Response $response,
 
     if (
         empty($decrypted_data) ||
+        $decrypted_data->expired_at < time() ||
         !Capsule::table('site')->where('id', '=', $site_id)->where('verify_ticket_code', '=', $code)->exists()
     ) {
         $response->getBody()->write(json_encode([
