@@ -93,11 +93,11 @@ Demo 帳號
   ```
 </details>
 
-※ WebsiteB 是個範例(未實作)，可能會有多個子服務站
-
 ※ 避免有 WebsiteA 是身分A，而 WebsiteB 是身分B的情況發生，在登出時需由SSO站對所有子服務站進行要求登出
 
-## 細節
+## 細節 
+
+### ticket
 
 ticket 是使用 `AES-256-CBC` 演算法進行加密的資料(加密密鑰只有SSO站知道)
 
@@ -106,3 +106,13 @@ ticket 內容包括：
 - username : 用來辨識這個 ticket 是哪個使用者
 - site_id : 用於辨識該 ticket 是簽發給哪個網站的，確認 `site_id` 與 `通關密碼` 符合時才能通過 (防止 ticket 從A站被竊取時，跑去用於登入B站)
 - expired_at : 一個很快過期的時間 (例如：3秒)，可以避免使用者直接點瀏覽器歷史紀錄就直接登入了
+
+### 全站登出
+
+避免從 A 站跳轉至 B 站時，是不同使用者的情況，需要進行全部網站登出
+
+這邊實作使用 iframe 去開啟子網站的登出頁 (display: none)，是因為不同子站可能會是用不同實作身分，直接用 iframe 兩種都可以解決
+
+- session : 需要帶著 cookies 去向伺服器要求登出 (後端)
+
+- JWT : 需要前端的 javascript 去清除掉 JWT 資料 (前端)
