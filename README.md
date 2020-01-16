@@ -96,3 +96,13 @@ Demo 帳號
 ※ WebsiteB 是個範例(未實作)，可能會有多個子服務站
 
 ※ 避免有 WebsiteA 是身分A，而 WebsiteB 是身分B的情況發生，在登出時需由SSO站對所有子服務站進行要求登出
+
+## 細節
+
+ticket 是使用 `AES-256-CBC` 演算法進行加密的資料(加密密鑰只有SSO站知道)
+
+ticket 內容包括：
+
+- username : 用來辨識這個 ticket 是哪個使用者
+- site_id : 用於辨識該 ticket 是簽發給哪個網站的，確認 `site_id` 與 `通關密碼` 符合時才能通過 (防止 ticket 被使用者從A站複製去B站使用)
+- expired_at : 一個很快過期的時間 (例如：3秒)，可以避免使用者直接點瀏覽器歷史紀錄就直接登入了
