@@ -3,16 +3,24 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/../bootstrap.php";
 
+use ComocoSsoDemo\SsoServer\ErrorHandler;
 use ComocoSsoDemo\SsoServer\Middlewares\JsonBodyParserMiddleware;
+use ComocoSsoDemo\SsoServer\Services\ResponseService;
+use ComocoSsoDemo\SsoServer\Services\MemberService;
 use Firebase\JWT\JWT;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Exception\HttpUnauthorizedException;
 use Slim\Factory\AppFactory;
 
 $app = AppFactory::create();
 $app->addRoutingMiddleware();
 $app->add(new JsonBodyParserMiddleware);
+
+$errorHandler = new ErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 /*
  * 登入用的API，登入成功取得token
@@ -20,27 +28,18 @@ $app->add(new JsonBodyParserMiddleware);
 $app->post('/api/login', function (Request $request, Response $response, $args) {
     $parsed_body = $request->getParsedBody();
 
-    $username = (isset($parsed_body['username'])) ? $parsed_body['username'] : '';
-    $password = (isset($parsed_body['password'])) ? $parsed_body['password'] : '';
+    $username = $parsed_body['username'] ?? '';
+    $password = $parsed_body['password'] ?? '';
 
     // 驗證密碼
-    $account = Capsule::table('account')->where('username', '=', $username)->first();
-    if ($account == null || !password_verify($password, $account->password)) {
-      $response->getBody()->write(json_encode([
-          'result' => 'FAIL',
-      ]));
-      return $response->withHeader('Content-Type', 'application/json')
-          ->withStatus(401);
+    if (!MemberService::validateAccountPassword($username, $password)) {
+        throw new HttpUnauthorizedException($request);
     }
 
     // 簽發JWT token
     $key = getenv('KEY');
-    $response->getBody()->write(json_encode([
-        'result' => 'SUCCESS',
-        'token' => JWT::encode(['username' => $username, 'exp' => time() + 21600], $key)
-    ]));
-    return $response->withHeader('Content-Type', 'application/json')
-        ->withStatus(200);
+    $token = JWT::encode(['username' => $username, 'exp' => time() + 21600], $key);
+    return ResponseService::generateJsonResponse($response, ['token' => $token]);
 });
 
 $app->get('/api/available-sites', function (Request $request, Response $response, $args) {
