@@ -113,8 +113,8 @@ ticket 內容包括：
 
 這邊實作使用 iframe 去開啟子網站的登出頁 (display: none)，是因為不同子站可能會是用不同方式實作登入狀態，直接用 iframe 兩種都可以解決
 
-- session : 需要帶著 cookies 去向伺服器要求登出 (後端) 
-
-※ Chrome 在 2020/08 的時候調整了預設的 Cookies 在 iframe 中運作方式，所以 Cookies 需要另外設定 SameSite 參數，參考 [此連結](https://stackoverflow.com/questions/45094712/iframe-not-reading-cookies-in-chrome) 
+- session : 需要帶著 cookies 去向伺服器要求登出 (後端)，另外需注意下面 `註1`
 
 - JWT : 需要前端的 javascript 去清除掉 JWT 資料 (前端)
+
+※ 註1: Chrome 在 2020/08 的時候調整了預設的 Cookies 在 iframe 中運作方式，所以 Cookies 需要另外設定 SameSite 參數，參考 [此連結](https://stackoverflow.com/questions/45094712/iframe-not-reading-cookies-in-chrome) 
